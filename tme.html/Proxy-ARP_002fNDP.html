@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for The Machine Emulator (version 0.12rc10, 14 October 2022),
+which is a generic machine emulator.
+
+Copyright (C) 2015 Ruben Agin
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled
+"GNU Free Documentation License". -->
+<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Proxy ARP/NDP (The Machine Emulator (TME) 0.12rc10)</title>
+
+<meta name="description" content="Proxy ARP/NDP (The Machine Emulator (TME) 0.12rc10)">
+<meta name="keywords" content="Proxy ARP/NDP (The Machine Emulator (TME) 0.12rc10)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Networking.html" rel="up" title="Networking">
+<link href="OpenVPN.html" rel="next" title="OpenVPN">
+<link href="Manual-NAT.html" rel="prev" title="Manual NAT">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: initial; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<span id="Proxy-ARP_002fNDP"></span><div class="header">
+<p>
+Next: <a href="OpenVPN.html" accesskey="n" rel="next">OpenVPN</a>, Previous: <a href="IPv4-Network-Address-Translation.html" accesskey="p" rel="prev">IPv4 Network Address Translation</a>, Up: <a href="Networking.html" accesskey="u" rel="up">Networking</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<span id="Proxy-ARP_002fNDP-1"></span><h4 class="subsection">1.8.4 Proxy ARP/NDP</h4>
+
+<p>An alternative to NAT in certain situations, is to use Proxy ARP. In
+fact, if you are already behind a NAT firewall, this may be preferable
+as it allows you to use a subset of the addresses in the subnet to
+which the host belongs, rather than having to set up a new subnet to
+NAT to/from.
+</p>
+<p>This is done by allocating some of the address space to the internal
+network set up by the TAP device and then broadcasting the ARP
+addresses through Proxy ARP, on the external network. The way this is
+done is host-dependent and must currently be set up manually. The
+details can be found in the documentation for your platform-of-choice,
+if available.
+</p>
+<p>The high-level details are as-follows (using commands on Linux for
+illustration):
+</p>
+<ol>
+<li> Set up the networking on TAP device as before, without NAT (nat=none),
+giving it a select pool of addresses from the external network. Make
+sure they are available first.
+
+</li><li> Set proxy_arp on the TAP interface, and any interface that packets
+should be forwarded to/from: echo 1 &gt;
+/proc/sys/net/ipv4/conf/&lt;if&gt;/proxy_arp.
+
+</li><li> Enable forwarding, if not already: echo 1 &gt;
+/proc/sys/net/ipv4/conf/all/forwarding.
+
+</li></ol>
+
+<p>In theory, that should be sufficient to get it working; the interfaces
+should &quot;learn&quot; how to route the packets. But other steps may be
+required if not working. For instance, you might have to explicitly
+set the proxy ARP addresses on the external interface, if they don&rsquo;t
+get set automatically (ip neighbor add &lt;address&gt; dev
+&lt;interface&gt;). Linux documentation indicates this should not be needed,
+but I have seen some cases where it doesn&rsquo;t seem to work. Default
+routes may also need to be set explicitly (ip route add &lt;addresses&gt;
+via &lt;address&gt; dev &lt;interface&gt;).
+</p>
+<p>NDP is the IPv6 generalization of ARP. The above instructions should
+apply, with commands used for IPv6 instead (ip -6). If your router
+doesn&rsquo;t have a route to your host, this may be needed to use IPv6
+networking.
+</p>
+<hr>
+<div class="header">
+<p>
+Next: <a href="OpenVPN.html" accesskey="n" rel="next">OpenVPN</a>, Previous: <a href="IPv4-Network-Address-Translation.html" accesskey="p" rel="prev">IPv4 Network Address Translation</a>, Up: <a href="Networking.html" accesskey="u" rel="up">Networking</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

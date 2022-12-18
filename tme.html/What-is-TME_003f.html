@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for The Machine Emulator (version 0.12rc10, 14 October 2022),
+which is a generic machine emulator.
+
+Copyright (C) 2015 Ruben Agin
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled
+"GNU Free Documentation License". -->
+<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>What is TME? (The Machine Emulator (TME) 0.12rc10)</title>
+
+<meta name="description" content="What is TME? (The Machine Emulator (TME) 0.12rc10)">
+<meta name="keywords" content="What is TME? (The Machine Emulator (TME) 0.12rc10)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Welcome-to-The-Machine-Emulator.html" rel="up" title="Welcome to The Machine Emulator">
+<link href="Supported-Hosts.html" rel="next" title="Supported Hosts">
+<link href="Welcome-to-The-Machine-Emulator.html" rel="prev" title="Welcome to The Machine Emulator">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: initial; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<span id="What-is-TME_003f"></span><div class="header">
+<p>
+Next: <a href="Supported-Hosts.html" accesskey="n" rel="next">Supported Hosts</a>, Up: <a href="Welcome-to-The-Machine-Emulator.html" accesskey="u" rel="up">Welcome to The Machine Emulator</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<span id="What-is-TME_003f-1"></span><h3 class="section">1.1 What is TME?</h3>
+
+<p>TME is a generic machine emulation system for emulating one or more
+machines. Each of the machines is specified in a special, extensible
+machine description language (MDL) called tmesh. It includes an
+interpreter for this language that is used to translate the
+description into a working, dynamical system that emulates the
+machine. The elements of the language are keywords that name
+individual components of the machine. Each component is implemented
+using dynamically loaded modules that are compiled directly into
+native machine code. In this way, it is very similar to a virtual
+machine and is what makes it so efficient compared to many other
+systems which may interpret the individual component descriptions.
+</p>
+<p>The machine description itself is interpreted, but it creates a
+statically connected system comprised of multiple dynamic modules that
+are themselves compiled. As each component keyword is translated, the
+components they describe get instantiated. This means that the
+component module is dynamically loaded into the main running
+program. In addition, components are connected via the &quot;at&quot;
+keyword. When they are connected, a communications path is established
+between the components. The path is dependent upon the interfaces
+presented by the components. This means that the components must have
+compatible interfaces in order to be connected using &quot;at&quot;. The
+communications protocols are determined by the components as well, and
+must obviously be compatible. In this way, the machine description
+language is very close to how an actual technical specification might
+be accomplished. This makes it a prime candidate for use in
+prototyping systems as well as for distributing dynamic specifications
+of production systems. It could also be a potential candidate for a
+future board-level (or network-level) ESL system (like SystemC) that
+actually compiles the MDL into an HDL such as Verilog or VHDL and from
+there into actual hardware systems with associated software
+toolchains. The possibilities are limitless!
+</p>
+<p>A good way to think of TME is that it is to machines what SPICE is to
+circuits. In SPICE, the components can be standard, primitive devices
+like resistors, diodes, and transistors, described using physical
+constraints. They can be connected to form complex electronic circuits
+which may then be simulated. Models of new components can be created
+in the SPICE language to provide novel circuit elements. In the same
+way, the elements in TME can be standard &quot;primitive&quot; components like
+ICs, memories, busses, or external devices like NICs and disk
+drives. New types of components can be modelled by coding their
+behaviour directly in C source code which, when compiled, exports the
+required interfaces as dynamically loaded modules using the extremely
+portable GNU libltdl. They are combined to form more complex systems
+such as computers that may then be emulated.
+</p>
+<hr>
+<div class="header">
+<p>
+Next: <a href="Supported-Hosts.html" accesskey="n" rel="next">Supported Hosts</a>, Up: <a href="Welcome-to-The-Machine-Emulator.html" accesskey="u" rel="up">Welcome to The Machine Emulator</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

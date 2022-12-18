@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for The Machine Emulator (version 0.12rc10, 14 October 2022),
+which is a generic machine emulator.
+
+Copyright (C) 2015 Ruben Agin
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled
+"GNU Free Documentation License". -->
+<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Manual NAT (The Machine Emulator (TME) 0.12rc10)</title>
+
+<meta name="description" content="Manual NAT (The Machine Emulator (TME) 0.12rc10)">
+<meta name="keywords" content="Manual NAT (The Machine Emulator (TME) 0.12rc10)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="IPv4-Network-Address-Translation.html" rel="up" title="IPv4 Network Address Translation">
+<link href="Proxy-ARP_002fNDP.html" rel="next" title="Proxy ARP/NDP">
+<link href="Auto-NAT.html" rel="prev" title="Auto NAT">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: initial; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<span id="Manual-NAT"></span><div class="header">
+<p>
+Previous: <a href="Auto-NAT.html" accesskey="p" rel="prev">Auto NAT</a>, Up: <a href="IPv4-Network-Address-Translation.html" accesskey="u" rel="up">IPv4 Network Address Translation</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<span id="Manual-NAT-1"></span><h4 class="subsubsection">1.8.3.2 Manual NAT</h4>
+
+<p>As root or superuser, run the following commands from a shell as
+required. $ext_if is the external, physical network card to NAT to and
+$int_if is the internal, tap device created by the TME
+configuration. To learn these, use &quot;ifconfig -a&quot; or &quot;ip addr show&quot; and
+note the names to use here.
+</p>
+<p><em>Linux/IPTABLES NAT Configuration (tme-0.9)</em>
+</p>
+<ol>
+<li> modprobe iptables_nat
+
+</li><li> echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+
+</li><li> iptables -F FORWARD (Optional; it flushes the FORWARD chain of the
+filter table; this is to ensure that there are no rules that will
+block the NAT from working. You may or may not need to do this
+depending on your setup. If you omit this step and find that there are
+problems communicating to the external net, e.g., DNS is not working,
+this is probably why. This is the case, e.g., with the default
+iptables config on Fedora Linux.)
+
+</li><li> iptables -t nat -A POSTROUTING -o $ext_if -j MASQUERADE
+
+</li><li> iptables -A FORWARD -i $ext_if -o $int_if -m state &ndash;state RELATED,ESTABLISHED -j ACCEPT
+
+</li><li> iptables -A FORWARD -i $int_if -o $ext_if -m state -j ACCEPT
+
+</li></ol>
+
+<p>Be sure you know what you are doing here, or consult your nearest
+system administrator or guru. There&rsquo;s a lot of documentation for
+IPTABLES available on the web and in manual pages. Unfortunately,
+IPTABLES does not have a public API with a stable interface for
+programming, although many have reported success with programming it
+using the undocumented API. But, this is just a very basic setup to
+get you going with connecting your TME instance to the Internet.
+</p>
+<p><em>BSD/PF NAT Configuration</em>
+</p>
+<ol>
+<li> ({Free,DragonFly}BSD) kldload pf
+
+</li><li> ({Open,Free,DragonFly}BSD) sysctl net.inet.ip.forwarding=1 (NetBSD)
+sysctl -w net.inet.ip.forwarding=1
+
+</li><li> pfctl -F rules (Optional depending on your setup. It simply flushes
+the rules modifier to ensure that nothing gets blocked; it&rsquo;s usually
+not required. If there are problems with communicating to the
+external net, this might be why.)
+
+</li><li> ({Net,Free,DragonFly}BSD) echo &quot;pass from $int_if:network to any
+keep state&quot; | pfctl -f- (OpenBSD) echo &quot;pass out on $ext_if from
+$int_if:network to any nat-to $ext_if&quot; | pfctl -f-
+
+</li><li> ({Net,Free,DragonFly}BSD) echo &quot;nat on $ext_if from $int_if:network
+to any -&gt; ($ext_if)&quot; | pfctl -f-
+
+</li><li> ({Net,Free,DragonFly}BSD) pfctl -e
+
+</li></ol>
+
+<p>Your mileage may vary; this is what worked for me, but you may have a
+different setup/needs, so use your own discretion and consult who and
+whatever documentation is required. Again, there is much documentation
+on PF available. There are also other NAT solutions available on the
+BSDs, but this seems to be the most flexible and stable. It also has a
+stable ioctl API for directly programming the rules into a
+program. I&rsquo;m also looking into using the new NPF facility in NetBSD,
+which seems to have an even nicer, functional programming API for
+direct integration into the tool.
+</p>
+<p>Note that OpenBSD requires only two steps (2 &amp; 4). Again, the goal
+here is to get the user up and running as quickly as possible with
+minimal fuss, so this is by no means a comprehensive way to do IP
+forwarding with NAT. Much documentation exists to assist you there,
+but hopefully we will have a minimal function built into the tool
+itself so that these steps won&rsquo;t be required to be done outside the
+tool.
+</p>
+<p>After NAT is setup, make sure your routes are set correctly in your
+guests. In particular, make sure the default gateway is set to the ip
+address of the tap device. Also, if you want to access the external
+network or Internet, you will have to set up DNS. Usually, you fill in
+the /etc/resolv.conf with the &quot;nameserver xx.xx.xx.xx&quot; line where
+xx.xx.xx.xx. is the ip address of the nameserver - usually the same as
+the host machine&rsquo;s. This is usually all done as part of the process of
+installing or configuring the guest OS; refer to the guest OS
+documentation for more details. It is basically the same as setting it
+up for an internal network as specified by the TME
+configuration.
+</p>
+<hr>
+<div class="header">
+<p>
+Previous: <a href="Auto-NAT.html" accesskey="p" rel="prev">Auto NAT</a>, Up: <a href="IPv4-Network-Address-Translation.html" accesskey="u" rel="up">IPv4 Network Address Translation</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

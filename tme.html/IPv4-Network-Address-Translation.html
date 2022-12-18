@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for The Machine Emulator (version 0.12rc10, 14 October 2022),
+which is a generic machine emulator.
+
+Copyright (C) 2015 Ruben Agin
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled
+"GNU Free Documentation License". -->
+<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>IPv4 Network Address Translation (The Machine Emulator (TME) 0.12rc10)</title>
+
+<meta name="description" content="IPv4 Network Address Translation (The Machine Emulator (TME) 0.12rc10)">
+<meta name="keywords" content="IPv4 Network Address Translation (The Machine Emulator (TME) 0.12rc10)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Networking.html" rel="up" title="Networking">
+<link href="Auto-NAT.html" rel="next" title="Auto NAT">
+<link href="PPP.html" rel="prev" title="PPP">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: initial; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<span id="IPv4-Network-Address-Translation"></span><div class="header">
+<p>
+Next: <a href="Proxy-ARP_002fNDP.html" accesskey="n" rel="next">Proxy ARP/NDP</a>, Previous: <a href="PPP.html" accesskey="p" rel="prev">PPP</a>, Up: <a href="Networking.html" accesskey="u" rel="up">Networking</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<span id="IPv4-Network-Address-Translation-1"></span><h4 class="subsection">1.8.3 IPv4 Network Address Translation</h4>
+
+<p>tmesh machines support IPv4 and thus require NAT between network
+segments (although not strictly required if subnetting - see Proxy
+ARP). IPv6 should work as well, but must be set up manually (and is
+currently untested). The way NAT is done is host-dependent. There are
+multiple NAT alternatives from host to host, and even on the same host
+platforms. We try to support the major ones here, either through
+autoconfiguration within TME itself, or by providing instructions to
+allow you to manually customize it to your own setup. Currently, three
+NAT technologies are supported: NFTables, NPF and PF. NFTables is a
+Linux-only solution, and is the next-generation packet filtering
+technology to replace IPTables in the future. NPF is a NetBSD-only
+tech that serves a similar purpose on that platform, supplanting PF at
+some point presumably. They are both very similar in that they work in
+the same way as BPF. They take a set of compiled filter rules that
+specify what to do with individual packets. PF is the traditional BSD
+filter.
+</p>
+<p>All will write the rules automatically, enable IPv4 forwarding and
+start filtering right away. You can disable this behaviour at
+compile-time (using &ndash;disable-nat) or run-time (by specifying a nat
+interface that doesn&rsquo;t exist on the tap nat option). Alternatively,
+you may manually add or modify the rules after starting tme to suit
+your own needs, but tmesh will overwrite them if you run it again &mdash;
+it does not persist, but uses a static set of rules in the current
+implementation.
+</p>
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top">&bull; <a href="Auto-NAT.html" accesskey="1">Auto NAT</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Manual-NAT.html" accesskey="2">Manual NAT</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+</table>
+
+<hr>
+<div class="header">
+<p>
+Next: <a href="Proxy-ARP_002fNDP.html" accesskey="n" rel="next">Proxy ARP/NDP</a>, Previous: <a href="PPP.html" accesskey="p" rel="prev">PPP</a>, Up: <a href="Networking.html" accesskey="u" rel="up">Networking</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

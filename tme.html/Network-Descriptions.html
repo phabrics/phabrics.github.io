@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for The Machine Emulator (version 0.12rc10, 14 October 2022),
+which is a generic machine emulator.
+
+Copyright (C) 2015 Ruben Agin
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled
+"GNU Free Documentation License". -->
+<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Network Descriptions (The Machine Emulator (TME) 0.12rc10)</title>
+
+<meta name="description" content="Network Descriptions (The Machine Emulator (TME) 0.12rc10)">
+<meta name="keywords" content="Network Descriptions (The Machine Emulator (TME) 0.12rc10)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Networking.html" rel="up" title="Networking">
+<link href="Network-Services.html" rel="next" title="Network Services">
+<link href="OpenVPN-Socket-Link-Devices.html" rel="prev" title="OpenVPN Socket Link Devices">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: initial; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<span id="Network-Descriptions"></span><div class="header">
+<p>
+Next: <a href="Network-Services.html" accesskey="n" rel="next">Network Services</a>, Previous: <a href="OpenVPN.html" accesskey="p" rel="prev">OpenVPN</a>, Up: <a href="Networking.html" accesskey="u" rel="up">Networking</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<span id="Network-Descriptions-1"></span><h4 class="subsection">1.8.6 Network Descriptions</h4>
+
+<p>Using the tmesh machine description language, it&rsquo;s possible to
+describe not only a single machine, but also an entire network of
+machines. This is done by creating a clever configuration of TAP and
+BPF network devices which allow multiple machines described by
+different tmesh scripts to communicate. You can connect the machines
+via their network devices using the very same statements that are used
+to connect their other components. In particular, you create a
+&quot;master&quot; machine that includes a tap connection that is then connected
+to by other &quot;slave&quot; machines using bpf filters. The master&rsquo;s
+connection can act as an application-level gateway by including a nat
+configuration as well. You may then nat it to other subnets or to the
+external network as described above. The slaves simply connect to the
+tap device the same way they would to a real NIC. All slaves connected
+in this way can directly communicate with each other or the master
+machine using ethernet protocols. When configured correctly, they may
+also communicate with the external machine or other networks outside
+the internal network via nat.
+</p>
+<p>The naive approach is to create the master tap system the same way you
+would any ordinary nat machine. In other words, the emulated NIC
+connected directly to a tap device that may be nat&rsquo;d to an external
+network. Other machines could then be added to the internal network
+thus created, by using bpf to set a filter on the tap device. This
+almost works. All the machines in the network can communicate with
+each other. But only the master machine can communicate with the
+external network. Why is this? The answer is that writing to the bpf
+does not write back to the tap device. To communicate outside the
+network, it is necessary to write to the tap. But remember that the
+tap device is actually a software NIC that kind of works in reverse of
+how the bpf devices do. Writing to tap sends packets to the
+machine. Writing to bpf sends to the network. Reading is the opposite
+in both cases, i.e., tap receives packets from the network, bpf
+receives them from the machine. (It&rsquo;s actually a little more
+complicated than that as bpf reads also read from the network, but
+that&rsquo;s not an issue.) So, why is this a problem? Well, think about
+what happens in the case where one of the bpf machines sends a packet
+with a route through the tap device&rsquo;s address (i.e., a default,
+gateway route). The tap will never see this packet! This is because
+the write to bpf sent it &quot;out&quot; on the tap device&rsquo;s network, so tap
+never saw it.
+</p>
+<p>Confusing, isn&rsquo;t it? How do we resolve this dilemma? The solution is a
+little tricky, but it actually works out quite well. More importantly,
+it works within the original methodology of TME, once again validating
+its approach to describing complex systems through simple components
+and working without requiring any updates to it. Plus, once you figure
+it out, it&rsquo;s quite straightforward and provides a way to build up ever
+more complex configurations from simple connections. You just have to
+understand how the information flows between network components in
+tmesh. Each network component is one side of a paired
+connection. There is a read path and a write path and they are both
+connected to the same other side. So when network components are
+connected, a bidirectional path is set up between them, much like a
+pipe. Writes to one end will be read from the other. This is why they
+must be paired. As it turns out, this is all you need to set up just
+about any network configuration. The key lies in how you set up the
+master tap connection to the network. The sample tap machine
+description simply paired the emulated NIC with the tap device. But,
+this is not good enough. We also have to write back packets sent
+through bpf filters set on the tap. As alluded to, this can already be
+accomplished by setting up another pairing. Instead of pairing the tap
+directly with the emulated NIC, we pair the tap with itself instead!
+What this accomplishes is to make the packets written out to tap get
+written back to the tap device, creating a loopback scenario. This
+allows tap to see the packets written by
+bpf. <a href="http://phabrics.com/MY-SUN4C3">Here</a> is a sample machine
+description that establishes the writeback tap necessary to create a
+fully nat&rsquo;ing network of machines! Note that it is a simple
+modification of the standard sun4c description included with the
+latest tme distribution. In particular, the relevant lines describing
+this master configuration are changed to this:
+</p>
+<p><code> tap0:
+tme/host/tun/tap interface tapA inet 10.0.77.1 netmask 255.255.255.0
+bcast 10.0.77.255&nbsp;tap0 at tap0&nbsp;bpf0 at le0: tme/host/bsd/bpf
+interface tapA&nbsp;</code>
+</p>
+<p>There are several things to note here. First, the tap device, tap0, is
+no longer connected directly to the emulated NIC, le0. Instead, it is
+now a root node. Second, you may see duplicate ICMP packets when doing
+pings. This is not because of suboptimal routing, but because the bpf
+device detects both reads and writes of packets to the tap
+device. Since all the packets are written back, they are all
+duplicated. This is inefficient, since only packets destined for tap
+need be written back. Unfortunately, there&rsquo;s no way around this in the
+current version of TME, because we can&rsquo;t yet set a filter on tap
+devices directly. Future revisions should fix this issue. Finally, the
+first two lines are unique to this master configuration. The last line
+is shared among all the slave configurations as well as this one. The
+bpf filter is set on the tap device by naming its interface the same
+as tap0&rsquo;s. It is paired with the emulated NIC (le0), effectively
+connecting the each slave machine to the tap network.
+</p>
+<p>Note: The sample master config was for Linux. The interface name in
+particular might need to be changed depending on whether the platform
+supports that or not. In NetBSD, for instance, the default names start
+at tap0 and go up from there.
+</p>
+<p>Note: The different machines should run in their own processes in
+order to be efficient. When looked at this way, the ethernet trunk is
+analogous to an IPC bus connecting the processes. Indeed, it might
+make a nice alternate mechanism for just such a purpose. The tap/bpf
+devices each run in a separate &quot;thread&quot; within each process, just like
+all the other components. The more components, the more threads
+needed; currently the threading model is cooperative using a coprocess
+technique that does not take full advantage of the multithreading
+capabilities of modern processors. This is one area for future
+improvement.
+</p>
+<hr>
+<div class="header">
+<p>
+Next: <a href="Network-Services.html" accesskey="n" rel="next">Network Services</a>, Previous: <a href="OpenVPN.html" accesskey="p" rel="prev">OpenVPN</a>, Up: <a href="Networking.html" accesskey="u" rel="up">Networking</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

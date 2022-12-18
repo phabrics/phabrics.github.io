@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for The Machine Emulator (version 0.12rc10, 14 October 2022),
+which is a generic machine emulator.
+
+Copyright (C) 2015 Ruben Agin
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled
+"GNU Free Documentation License". -->
+<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Installation (The Machine Emulator (TME) 0.12rc10)</title>
+
+<meta name="description" content="Installation (The Machine Emulator (TME) 0.12rc10)">
+<meta name="keywords" content="Installation (The Machine Emulator (TME) 0.12rc10)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Welcome-to-The-Machine-Emulator.html" rel="up" title="Welcome to The Machine Emulator">
+<link href="Running.html" rel="next" title="Running">
+<link href="Obtaining.html" rel="prev" title="Obtaining">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: initial; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<span id="Installation"></span><div class="header">
+<p>
+Next: <a href="Running.html" accesskey="n" rel="next">Running</a>, Previous: <a href="Obtaining.html" accesskey="p" rel="prev">Obtaining</a>, Up: <a href="Welcome-to-The-Machine-Emulator.html" accesskey="u" rel="up">Welcome to The Machine Emulator</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<span id="Installation-1"></span><h3 class="section">1.5 Installation</h3>
+
+<p>This should be the standard GNU install as documented in INSTALL. Some
+general steps ($srcdir refers to location that the source package is
+extracted to.) -
+</p>
+<ol>
+<li> tar xJf tme-$version.tar.xz
+
+</li><li> mkdir $builddir
+
+</li><li> cd $builddir
+
+</li><li> $srcdir/configure &ndash;prefix=$installprefix # non-default configure
+options: &ndash;disable-recode &ndash;enable-threads=&lt;threadmodel&gt;
+&ndash;disable-shared &ndash;disable-nat &ndash;without-x &ndash;enable-debug // see notes
+or output of &ndash;help for more details
+
+</li><li> make
+
+</li><li> su
+
+</li><li> make install
+
+</li></ol>
+
+<p>Installation step should usually be done as root if you want to
+configure tap devices with ip parameters in the tmesh descriptions. On
+BSD, it will run setuid to allow this, but gives up privilege
+immediately after. On Linux, it will install with cap_net_admin
+capability instead. Plugin modules are normally libtool shared
+libraries, unless the package is configured with &ndash;disable-shared, in
+which case they are static libtool libraries. Installable executable
+is normally done with shared enabled. Setting LD_LIBRARY_PATH will not
+work for setuid executables, as it is simply ignored.
+</p>
+<p>Note: If you have trouble linking against dependent libraries, like
+libltdl or libnftnl, it could be because they are installed in
+non-standard locations. Try setting LD_LIBRARY_PATH to the location
+$installprefix/lib or ldconfig $installprefix/lib. You know the drill.
+</p>
+<p>Note: to run setuid, be sure it is allowed on the installation
+filesystem, i.e., the nosuid bit should not be set there, which it is
+usually not for standard install locations such as /usr/local
+</p>
+<p>Note: recode doesn&rsquo;t seem to currently work on 64-bit platforms with
+threading enabled, so &ndash;disable-recode is required on these hosts when
+using multithreading. SJLJ threading (i.e., single-threaded
+multitasking using setjmp/longjmp) should work with recode on all
+platforms that it builds on.
+</p>
+<p>Note: &ndash;disable-threads is an alternative way to use the classic SJLJ
+threading model. Also specified by &ndash;enable-threads=sjlj
+</p>
+<p>Note: To debug, or if you otherwise have issues running TME, you may
+try the &ndash;enable-debug configure option.
+</p>
+<p>Note: starting with 1.0beta_4, it is no longer necessary to set
+TME_MODULE_PATH. The program uses the install path directly, but it
+can still be set to allow alternative directories to be used as
+well. This may be taken out at some point as it might be a security
+risk.
+</p>
+<hr>
+<div class="header">
+<p>
+Next: <a href="Running.html" accesskey="n" rel="next">Running</a>, Previous: <a href="Obtaining.html" accesskey="p" rel="prev">Obtaining</a>, Up: <a href="Welcome-to-The-Machine-Emulator.html" accesskey="u" rel="up">Welcome to The Machine Emulator</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

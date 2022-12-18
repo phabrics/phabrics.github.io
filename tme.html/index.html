@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for The Machine Emulator (version 0.12rc10, 14 October 2022),
+which is a generic machine emulator.
+
+Copyright (C) 2015 Ruben Agin
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled
+"GNU Free Documentation License". -->
+<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Top (The Machine Emulator (TME) 0.12rc10)</title>
+
+<meta name="description" content="Top (The Machine Emulator (TME) 0.12rc10)">
+<meta name="keywords" content="Top (The Machine Emulator (TME) 0.12rc10)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<link href="#Top" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Welcome-to-The-Machine-Emulator.html" rel="next" title="Welcome to The Machine Emulator">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: initial; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<h1 class="settitle" align="center">The Machine Emulator (TME) 0.12rc10</h1>
+
+
+
+
+<span id="SEC_Contents"></span>
+<h2 class="contents-heading">Table of Contents</h2>
+
+<div class="contents">
+
+<ul class="no-bullet">
+  <li><a id="toc-Welcome-to-The-Machine-Emulator-1" href="Welcome-to-The-Machine-Emulator.html#Welcome-to-The-Machine-Emulator">1 Welcome to The Machine Emulator</a>
+  <ul class="no-bullet">
+    <li><a id="toc-What-is-TME_003f-1" href="What-is-TME_003f.html#What-is-TME_003f">1.1 What is TME?</a></li>
+    <li><a id="toc-Supported-Hosts-1" href="Supported-Hosts.html#Supported-Hosts">1.2 Supported Hosts</a></li>
+    <li><a id="toc-Prerequisites-1" href="Prerequisites.html#Prerequisites">1.3 Prerequisites</a>
+    <ul class="no-bullet">
+      <li><a id="toc-Recommended-1" href="Recommended.html#Recommended">1.3.1 Recommended</a></li>
+      <li><a id="toc-Optional-1" href="Optional.html#Optional">1.3.2 Optional</a></li>
+    </ul></li>
+    <li><a id="toc-Obtaining-1" href="Obtaining.html#Obtaining">1.4 Obtaining</a></li>
+    <li><a id="toc-Installation-1" href="Installation.html#Installation">1.5 Installation</a></li>
+    <li><a id="toc-Running-1" href="Running.html#Running">1.6 Running</a>
+    <ul class="no-bullet">
+      <li><a id="toc-Guest-platforms-1" href="Guest-platforms.html#Guest-platforms">1.6.1 Guest platforms</a></li>
+    </ul></li>
+    <li><a id="toc-Graphics-1" href="Graphics.html#Graphics">1.7 Graphics</a>
+    <ul class="no-bullet">
+      <li><a id="toc-GTK-1" href="GTK.html#GTK">1.7.1 GTK</a></li>
+      <li><a id="toc-VNC-1" href="VNC.html#VNC">1.7.2 VNC</a></li>
+      <li><a id="toc-Screenshots-1" href="Screenshots.html#Screenshots">1.7.3 Screenshots</a></li>
+    </ul></li>
+    <li><a id="toc-Networking-1" href="Networking.html#Networking">1.8 Networking</a>
+    <ul class="no-bullet">
+      <li><a id="toc-Ethernet-1" href="Ethernet.html#Ethernet">1.8.1 Ethernet</a></li>
+      <li><a id="toc-PPP-1" href="PPP.html#PPP">1.8.2 PPP</a></li>
+      <li><a id="toc-IPv4-Network-Address-Translation-1" href="IPv4-Network-Address-Translation.html#IPv4-Network-Address-Translation">1.8.3 IPv4 Network Address Translation</a>
+      <ul class="no-bullet">
+        <li><a id="toc-Auto-NAT-1" href="Auto-NAT.html#Auto-NAT">1.8.3.1 Auto NAT</a></li>
+        <li><a id="toc-Manual-NAT-1" href="Manual-NAT.html#Manual-NAT">1.8.3.2 Manual NAT</a></li>
+      </ul></li>
+      <li><a id="toc-Proxy-ARP_002fNDP-1" href="Proxy-ARP_002fNDP.html#Proxy-ARP_002fNDP">1.8.4 Proxy ARP/NDP</a></li>
+      <li><a id="toc-OpenVPN-1" href="OpenVPN.html#OpenVPN">1.8.5 OpenVPN</a>
+      <ul class="no-bullet">
+        <li><a id="toc-OpenVPN-TUN_002fTAP-Devices-1" href="OpenVPN-TUN_002fTAP-Devices.html#OpenVPN-TUN_002fTAP-Devices">1.8.5.1 OpenVPN TUN/TAP Devices</a></li>
+        <li><a id="toc-OpenVPN-Socket-Link-Devices-1" href="OpenVPN-Socket-Link-Devices.html#OpenVPN-Socket-Link-Devices">1.8.5.2 OpenVPN Socket Link Devices</a></li>
+      </ul></li>
+      <li><a id="toc-Network-Descriptions-1" href="Network-Descriptions.html#Network-Descriptions">1.8.6 Network Descriptions</a></li>
+      <li><a id="toc-Network-Services-1" href="Network-Services.html#Network-Services">1.8.7 Network Services</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a id="toc-GNU-Free-Documentation-License-1" href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License">Appendix A GNU Free Documentation License</a></li>
+  <li><a id="toc-Index-1" href="Index.html#Index" rel="index">Index</a></li>
+</ul>
+</div>
+
+
+<span id="Top"></span><div class="header">
+<p>
+Next: <a href="Welcome-to-The-Machine-Emulator.html" accesskey="n" rel="next">Welcome to The Machine Emulator</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<span id="The-Machine-Emulator"></span><h1 class="top">The Machine Emulator</h1>
+
+<p>The Machine Emulator, or tme, provides a general-purpose framework for
+computer emulation. The goal is to create a large library of modules,
+each emulating a specific computer chip, or bus, or board, etc. These
+modules offer standard interfaces that allow you to connect them
+together to create a whole machine emulation with a minimum of effort.
+</p>
+<p>While these assembled machine emulations will likely never be as fast
+as a single program designed from the beginning to emulate a specific
+machine, the standard module interfaces should be reasonably
+fast. Even though the best abstract interfaces still introduce
+overhead and can&rsquo;t always express certain optimization hints,
+reusability will always save a lot of development time, and
+performance problems can be addressed by faster hardware.
+</p>
+<p>This manual is for The Machine Emulator (version 0.12rc10, 14 October 2022),
+which is a generic machine emulator.
+</p>
+<p>Copyright &copy; 2015 Ruben Agin
+</p><blockquote>
+<p>Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled
+&ldquo;GNU Free Documentation License&rdquo;.
+</p></blockquote>
+
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top">&bull; <a href="Welcome-to-The-Machine-Emulator.html" accesskey="1">Welcome to The Machine Emulator</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="GNU-Free-Documentation-License.html" accesskey="2">GNU Free Documentation License</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Index.html" rel="index" accesskey="3">Index</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">Complete index.
+</td></tr>
+<tr><th colspan="3" align="left" valign="top"><pre class="menu-comment">
+
+</pre></th></tr><tr><th colspan="3" align="left" valign="top"><pre class="menu-comment"> &mdash; The Detailed Node Listing &mdash;
+
+Welcome to The Machine Emulator
+
+</pre></th></tr><tr><td align="left" valign="top">&bull; <a href="What-is-TME_003f.html" accesskey="4">What is TME?</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Supported-Hosts.html" accesskey="5">Supported Hosts</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Prerequisites.html" accesskey="6">Prerequisites</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Obtaining.html" accesskey="7">Obtaining</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Installation.html" accesskey="8">Installation</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Running.html" accesskey="9">Running</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Graphics.html">Graphics</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Networking.html">Networking</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><th colspan="3" align="left" valign="top"><pre class="menu-comment">
+
+Prerequisites
+
+</pre></th></tr><tr><td align="left" valign="top">&bull; <a href="Recommended.html">Recommended</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Optional.html">Optional</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><th colspan="3" align="left" valign="top"><pre class="menu-comment">
+
+Running
+
+</pre></th></tr><tr><td align="left" valign="top">&bull; <a href="Guest-platforms.html">Guest platforms</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><th colspan="3" align="left" valign="top"><pre class="menu-comment">
+
+Graphics
+
+</pre></th></tr><tr><td align="left" valign="top">&bull; <a href="Screenshots.html">Screenshots</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><th colspan="3" align="left" valign="top"><pre class="menu-comment">
+
+Networking
+
+</pre></th></tr><tr><td align="left" valign="top">&bull; <a href="Ethernet.html">Ethernet</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="PPP.html">PPP</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="IPv4-Network-Address-Translation.html">IPv4 Network Address Translation</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Proxy-ARP_002fNDP.html">Proxy ARP/NDP</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="OpenVPN.html">OpenVPN</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Network-Descriptions.html">Network Descriptions</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Network-Services.html">Network Services</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><th colspan="3" align="left" valign="top"><pre class="menu-comment">
+
+IPv4 Network Address Translation
+
+</pre></th></tr><tr><td align="left" valign="top">&bull; <a href="Auto-NAT.html">Auto NAT</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="Manual-NAT.html">Manual NAT</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><th colspan="3" align="left" valign="top"><pre class="menu-comment">
+
+</pre></th></tr></table>
+
+<hr>
+<div class="header">
+<p>
+Next: <a href="Welcome-to-The-Machine-Emulator.html" accesskey="n" rel="next">Welcome to The Machine Emulator</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

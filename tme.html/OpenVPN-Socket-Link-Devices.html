@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for The Machine Emulator (version 0.12rc10, 14 October 2022),
+which is a generic machine emulator.
+
+Copyright (C) 2015 Ruben Agin
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled
+"GNU Free Documentation License". -->
+<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>OpenVPN Socket Link Devices (The Machine Emulator (TME) 0.12rc10)</title>
+
+<meta name="description" content="OpenVPN Socket Link Devices (The Machine Emulator (TME) 0.12rc10)">
+<meta name="keywords" content="OpenVPN Socket Link Devices (The Machine Emulator (TME) 0.12rc10)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="OpenVPN.html" rel="up" title="OpenVPN">
+<link href="Network-Descriptions.html" rel="next" title="Network Descriptions">
+<link href="OpenVPN-TUN_002fTAP-Devices.html" rel="prev" title="OpenVPN TUN/TAP Devices">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: initial; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<span id="OpenVPN-Socket-Link-Devices"></span><div class="header">
+<p>
+Previous: <a href="OpenVPN-TUN_002fTAP-Devices.html" accesskey="p" rel="prev">OpenVPN TUN/TAP Devices</a>, Up: <a href="OpenVPN.html" accesskey="u" rel="up">OpenVPN</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<span id="OpenVPN-Socket-Link-Devices-1"></span><h4 class="subsubsection">1.8.5.2 OpenVPN Socket Link Devices</h4>
+
+<p>OpenVPN provides network links via sockets, for the purposes of creating
+private networks over existing L3 networks, using IP protocols.  We
+use this to expand ethernet networking capability with P2P links between
+network elements of machines on different host machines or networks.  These
+links are also known as tunnels because they can be used to make virtual
+networks through physical networks.
+</p>
+<p>The usage is quite simple:  network elements are connected to link elements
+in the same fashion as they are connected to other devices.  You can think
+of them as virtual ethernet or TAP devices.  The link elements are paired
+together, and can be in the same or other machine configurations to provide
+a bridge for the ethernet traffic to flow between them.
+</p>
+<p>Link elements are paired by IP address.  They are implemented using sockets,
+so they have a local and remote address.  The local address must be specified;
+the remote may be specified or floating.  The encapsulating protocol may be
+specified as UDP (stateless) or TCP (session-oriented).  In the latter case,
+both machines must be running and connected for either to proceed.
+</p>
+<p>The sample machine configurations provide examples of different scenarios where
+they might be used.  The simplest is a peer-to-peer connection between two
+machines (or even two elements theoretically).  This demonstrates the extreme
+flexibility of TME in specifying different network configurations over other
+networks which might not have the needed resources or topology.  In particular,
+TAP devices aren&rsquo;t available on every platform (ex: Cygwin).  You can bridge
+between a platform that doesn&rsquo;t and one that does to give external network
+access.  Once again, the possibilities are limited only by the firewalls.  You
+can also use proxies to overcome this (not yet implemented, but coming soon),
+or customize the firewall rules.
+</p>
+<p>Here is the peer-to-peer connection specification:
+</p>
+<p>Machine A -
+<code>link0 at le0: tme/host/openvpn/socket/link --dev tap --local 192.168.0.1 --remote 192.168.0.2</code>
+</p>
+<p>Machine B -
+<code>link1 at le0: tme/host/openvpn/socket/link --dev tap --local 192.168.0.2 --remote 192.168.0.1</code>
+</p>
+<p>This creates a network of two machines, but no external access.
+</p>
+<p>Here&rsquo;s a network description that allows for two remote machines, each on different hosts, to be connected to
+two local machines, networked using the BPF/TAP combo, and connected externally via AutoNAT.
+</p>
+<p>Host 1:
+Machine A -
+<code>tap1: tme/host/tun/tap inet 10.0.77.1 netmask 255.255.255.0 bcast 10.0.77.255</code>
+<code>link2 at tap1: tme/host/openvpn/socket/link --dev tap --local 192.168.0.1 --remote 192.168.0.2 --proto tcp-server</code>
+<code>bpf1 at le0: tme/host/bsd/bpf interface tap0</code>
+</p>
+<p>Machine B -
+<code>link3: tme/host/openvpn/socket/link --dev tap --local 192.168.0.1 --lport 1195 --remote 192.168.0.3</code>
+<code>bpf1 at le0: tme/host/bsd/bpf interface tap0</code>
+<code>bpf2 at link3: tme/host/bsd/bpf interface tap0</code>
+</p>
+<p>Host 2:
+Machine B -
+<code>link4 at le0: tme/host/openvpn/socket/link --dev tap --local 192.168.0.2 --remote 192.168.0.1 --proto tcp-client</code>
+</p>
+<p>Machine D -
+<code>link5 at le0: tme/host/openvpn/socket/link --dev tap --local 192.168.0.3 --remote 192.168.0.1 1195</code>
+</p>
+<p>To avoid confusion, element names in the samples are unique, but the actual names of elements are unimportant,
+so long as they are unique within a single machine configuration.  Also, when connecting more than one link,
+different ports must be used (or the addresses must otherwise be unique, perhaps using different interfaces).
+OpenVPN allows for shared ports, but it hasn&rsquo;t been tested yet.  The default protocol is UDP, but TCP can be
+used as well, using the &ndash;proto argument to the openvpn element as shown above.
+</p>
+<p>As you can tell, this can get pretty complicated.  The following section is a discussion of the BPF/TAP
+network bridge, for making a local network on the host.  The capabilities and documentation will continue
+to improve, but TME is a great platform for experimentation.  Perhaps, there are other configurations
+that have yet to be thought of... or better ways of accomplishing these tasks.  There are no correct methods,
+but these idioms are a good starting point.
+</p>
+<hr>
+<div class="header">
+<p>
+Previous: <a href="OpenVPN-TUN_002fTAP-Devices.html" accesskey="p" rel="prev">OpenVPN TUN/TAP Devices</a>, Up: <a href="OpenVPN.html" accesskey="u" rel="up">OpenVPN</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

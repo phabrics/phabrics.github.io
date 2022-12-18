@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- This manual is for The Machine Emulator (version 0.12rc10, 14 October 2022),
+which is a generic machine emulator.
+
+Copyright (C) 2015 Ruben Agin
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled
+"GNU Free Documentation License". -->
+<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Supported Hosts (The Machine Emulator (TME) 0.12rc10)</title>
+
+<meta name="description" content="Supported Hosts (The Machine Emulator (TME) 0.12rc10)">
+<meta name="keywords" content="Supported Hosts (The Machine Emulator (TME) 0.12rc10)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<link href="index.html" rel="start" title="Top">
+<link href="Index.html" rel="index" title="Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Welcome-to-The-Machine-Emulator.html" rel="up" title="Welcome to The Machine Emulator">
+<link href="Prerequisites.html" rel="next" title="Prerequisites">
+<link href="What-is-TME_003f.html" rel="prev" title="What is TME?">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: initial; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<span id="Supported-Hosts"></span><div class="header">
+<p>
+Next: <a href="Prerequisites.html" accesskey="n" rel="next">Prerequisites</a>, Previous: <a href="What-is-TME_003f.html" accesskey="p" rel="prev">What is TME?</a>, Up: <a href="Welcome-to-The-Machine-Emulator.html" accesskey="u" rel="up">Welcome to The Machine Emulator</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<span id="Supported-Hosts-1"></span><h3 class="section">1.2 Supported Hosts</h3>
+
+<p>One of the major goals of TME is to work on as many hosts as
+possible. This is done by design when test machines are available, but
+it is obviously impossible to cover all platforms, even the major
+ones. Nonetheless, I have tried to cover Linux &amp; the major BSDs in use
+today, but resource constraints &amp; time considerations limit the
+testing to just a few as follows -
+</p>
+<ol>
+<li> NetBSD - the original host platform of choice for developing TME. Runs
+on the most host machine platforms. Now includes support for autonat
+using NPF. A source package has been added to their
+<a href="http://pkgsrc-wip.cvs.sourceforge.net/pkgsrc-wip/wip/">pkgsrc-wip repo</a> under tme. See the
+<a href="http://pkgsrc-wip.sourceforge.net/">pkgsrc-wip project page</a> for
+more info on using it to install and try out source packages.
+
+</li><li> OpenBSD - the most secure OS and arguably the hardest to develop for
+as well. If it works here, it should work anywhere.
+
+</li><li> FreeBSD - the most popular BSD. Good for getting the word out.
+
+</li><li> PC-BSD - a FreeBSD derivative with a user-friendly graphical
+interface. Very nice for beginners, but powerful enough for advanced
+system administrators.
+
+</li><li> DragonflyBSD - a BSD with many modern features. A good testbed for
+trying out optimizations.
+
+</li><li> Fedora Linux - For now, the only Linux testbed, but other distros
+should follow.
+
+</li><li> Arch Linux - TME is now available in the Archlinux User Repository! It
+should install without any problems. See Arch Linux-specific info in
+the NFTables section below for a caveat, if you wish to use TAP/NAT
+for Ethernet access.
+
+</li><li> Windows - Preliminary support for building/running on Windows
+platforms is provided through Cygwin. It should work out of the
+box. See below for details. It should also build (natively or cross)
+on MinGW, and run under the Wine emulator (use &ndash;without-x
+&ndash;enable-threads=glib configure options). Preliminary Ethernet support is
+available for Windows, using OpenVPN.
+
+</li><li> Other - It should work on any POSIX platforms, sans whatever features
+aren&rsquo;t available on them. Illumos (a free version of Solaris) is one
+example that has been tried, but doesn&rsquo;t provide Ethernet support,
+yet. OS X has NOT been tried, but it should be fairly simple to port
+to that platform.
+
+</li></ol>
+
+<p>Another goal is to work on the latest versions of all these &amp;
+more. Expanding to other platforms is highly encouraged, and any
+successes or patches to make it work on others is encouraged. Please
+send any patches or info about other platforms to
+<a href="mailto:phabrics@phabrics.com">phabrics@phabrics.com</a>. As it expands, we would like to incorporate
+any core patches that expand functionality to other platforms, while
+keeping the others working. This requires a constant QA cycle across
+all supported platforms, so may not always be possible. In particular,
+any expansion should not break existing functionality on a known-good
+host. This is another goal.
+</p>
+<p>It should be relatively easy to install directly from a source tarball
+(see below) on any of the hosts mentioned above. Every effort has been
+made to make this possible with minimal fuss and no extra
+configuration. Another one of the main goals was to make this as
+self-contained a package as possible. No other tools should be needed
+outside of the initial build process to get tmesh working. All
+configuration is done with the tmesh scripts to keep things as simple
+as possible.
+</p>
+<p>Packages may be made available at some point for some of the hosts
+above, but should download original source from the site(s) documented
+below. The original TME package (which stopped at 0.8 as of this
+writing) is still packaged on most of these platforms.
+</p>
+<hr>
+<div class="header">
+<p>
+Next: <a href="Prerequisites.html" accesskey="n" rel="next">Prerequisites</a>, Previous: <a href="What-is-TME_003f.html" accesskey="p" rel="prev">What is TME?</a>, Up: <a href="Welcome-to-The-Machine-Emulator.html" accesskey="u" rel="up">Welcome to The Machine Emulator</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>
