@@ -3,8 +3,8 @@ This is intended to be the central repository for all documentation about phabri
 
 ## The Machine Emulator
 
-The TME project has a new project page. It is called nme, tentatively known as the Next-Generation Machine Emulator:
+The TME project has a new project page. It is called NME, tentatively known as the Next-Generation Machine Emulator:
 
 * [NME project page](https://osdn.net/projects/nme)
-* [NME web page](https:/nme.osdn.io)
+* [NME web page](https://nme.osdn.io)
 * [TME info page](https://phabrics.github.io/tme.html)
